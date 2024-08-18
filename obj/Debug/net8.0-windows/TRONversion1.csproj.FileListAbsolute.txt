@@ -26,3 +26,4 @@ C:\Users\R\Desktop\ProyectosC\TRON\obj\Debug\net8.0-windows\refint\TRONversion1.
 C:\Users\R\Desktop\ProyectosC\TRON\obj\Debug\net8.0-windows\TRONversion1.pdb
 C:\Users\R\Desktop\ProyectosC\TRON\obj\Debug\net8.0-windows\TRONversion1.genruntimeconfig.cache
 C:\Users\R\Desktop\ProyectosC\TRON\obj\Debug\net8.0-windows\ref\TRONversion1.dll
+C:\Users\R\Desktop\ProyectosC\TRON\obj\Debug\net8.0-windows\TRONversion1.sourcelink.json
