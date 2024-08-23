@@ -19,7 +19,7 @@ namespace JuegoTron
         public override void Dibujar(Graphics g, int x, int y, int tamano)
         {
             // Dibujar el fondo gris
-            using (Brush brush = new SolidBrush(Color.Navy))//Gray or Indigo
+            using (Brush brush = new SolidBrush(Color.MidnightBlue))//Gray or Indigo
             {
                 g.FillRectangle(brush, x, y, tamano, tamano);
             }

@@ -26,6 +26,7 @@
             this.ClientSize = new System.Drawing.Size(650, 650);
             this.Name = "Form1";
             this.Text = "Juego Tron";
+            this.BackColor = System.Drawing.Color.Gray;
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.ResumeLayout(false);
         }
