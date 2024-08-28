@@ -4,8 +4,6 @@ using System.Drawing;
 //dibujar la maya 
 namespace JuegoTron
 {
-    public partial class Form1 : Form
-    {
         public enum Direction
     {
         Arriba,
@@ -28,6 +26,7 @@ namespace JuegoTron
         {
             //InitializeComponent();
             InitializeComponent();
+            //InitializeComponen;t();
             InitializarMatrizListaEnlazada();
                         //InitializeLinkedListGrid();
             this.Controls.AddRange(MatrizListaEnlazada.Matriz.Cast<Node>().Select(n => n.CuadroImagen).ToArray());
@@ -101,7 +100,7 @@ namespace JuegoTron
         }
     }
 
-    }
+    
 
     
 }
