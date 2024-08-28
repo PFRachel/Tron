@@ -1,49 +1,105 @@
-using System.Drawing;
+using System.Collections.Generic;//listas genericas
+using System.Windows.Forms;//con controladores de formularios
 
-namespace JuegoTron
+
+namespace JuegoTron // nombre del espacio de trabajo
 {
-    public class Malla
+    
+    public class MatrizListaEnlazada //clase de la matriz 
     {
-        private const int Tamano = 30;
-        private const int TamanoCelda = 20;
-        public Nodo[,] Nodos { get; private set; }
+        private int sizeFilas;//tamaño de filas 
+        private int sizeColumnas;//tamaño de columnas
+        private int sizeCuadroImagen;//tamaño de cada Picturebox
 
-        public Malla()
+        public Node[,] Matriz { get;  set; }//matriz de nodos, como guia
+        public ListaEnlazadaMoto Moto { get; private set; }//
+
+        public MatrizListaEnlazada(int sizeFilas, int sizeColumnas, int sizeCuadroImagen)
         {
-            Nodos = new Nodo[Tamano, Tamano];
-            CrearMalla();
+            this.sizeFilas = sizeFilas;
+            this.sizeColumnas = sizeColumnas;
+            this.sizeCuadroImagen = sizeCuadroImagen;
+            Matriz = new Node[sizeFilas, sizeColumnas];
+            InitializarMatriz();
+            InitializarMoto();
+            
         }
 
-        private void CrearMalla()
+        private void InitializarMatriz()
         {
-            for (int i = 0; i < Tamano; i++)
+            for (int fila = 0; fila < sizeFilas; fila++)
             {
-                for (int j = 0; j < Tamano; j++)
+                for (int columna = 0; columna < sizeColumnas; columna++)
                 {
-                    Nodos[i, j] = new NodoConcreto();
-                }
-            }
+                    // Crear un nuevo nodo
+                    Node node = new Node
+                    {
+                        CuadroImagen = new PictureBox
+                        {
+                            Width = sizeCuadroImagen,
+                            Height = sizeCuadroImagen,
+                            BorderStyle = BorderStyle.FixedSingle,
+                            BackColor = Color.Black,
+                            Location = new Point(columna * sizeCuadroImagen, fila * sizeCuadroImagen)
+                        }
+                    };
 
-            for (int i = 0; i < Tamano; i++)
-            {
-                for (int j = 0; j < Tamano; j++)
-                {
-                    if (i > 0) Nodos[i, j].Arriba = Nodos[i - 1, j];
-                    if (i < Tamano - 1) Nodos[i, j].Abajo = Nodos[i + 1, j];
-                    if (j > 0) Nodos[i, j].Izquierda = Nodos[i, j - 1];
-                    if (j < Tamano - 1) Nodos[i, j].Derecha = Nodos[i, j + 1];
+                    // Añadir el nodo a la matriz
+                    Matriz[fila, columna] = node;
+
+                    // Conectar con nodos vecinos si existen
+                    if (fila > 0)
+                    {
+                        node.Arriba = Matriz[fila - 1, columna];
+                        Matriz[fila - 1, columna].Abajo = node;
+                    }
+                    if (columna > 0)
+                    {
+                        node.Izquierda = Matriz[fila, columna - 1];
+                        Matriz[fila, columna - 1].Derecha = node;
+                    }
                 }
             }
         }
 
-        public void Dibujar(Graphics g)
+        private void InitializarMoto()
         {
-            for (int i = 0; i < Tamano; i++)
+            Moto = new ListaEnlazadaMoto(); // Tamaño inicial de la estela
+
+            int Cabezafila = sizeFilas / 2;
+            int CabezaColumna = sizeColumnas / 2;
+
+            // Agregar los segmentos de la estela en orden, comenzando desde la cola
+            Moto.Add(Matriz[Cabezafila, CabezaColumna - 3]);
+            Moto.Add(Matriz[Cabezafila, CabezaColumna - 2]); // Primer segmento de la estela (cola)
+            Moto.Add(Matriz[Cabezafila, CabezaColumna - 1]); // Segundo segmento de la estela
+            Moto.Add(Matriz[Cabezafila, CabezaColumna]);     // Cabeza de la moto
+        }
+
+        public void MoverMoto(Direction direccion)
+        {
+            Node currentNode = Moto.Head.GridNode;
+            Node? nextNode = null;
+
+            switch (direccion)
             {
-                for (int j = 0; j < Tamano; j++)
-                {
-                    Nodos[i, j].Dibujar(g, j * TamanoCelda, i * TamanoCelda, TamanoCelda);
-                }
+                case Direction.Arriba:
+                    nextNode = currentNode.Arriba;
+                    break;
+                case Direction.Abajo:
+                    nextNode = currentNode.Abajo;
+                    break;
+                case Direction.Izquierda:
+                    nextNode = currentNode.Izquierda;
+                    break;
+                case Direction.Derecha:
+                    nextNode = currentNode.Derecha;
+                    break;
+            }
+
+            if (nextNode != null)
+            {
+                Moto.Move(nextNode);
             }
         }
     }

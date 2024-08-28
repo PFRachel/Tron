@@ -1,15 +1,17 @@
 using System.Drawing;//Manejar graficos
 
-namespace JuegoTron
+namespace JuegoTron // espacio nombre del juego
 {
-    public abstract class Nodo
+    public class Node// clase nodo
     {
-        public Nodo? Arriba { get; set; }
-        public Nodo? Abajo { get; set; }
-        public Nodo? Izquierda { get; set; }
-        public Nodo? Derecha { get; set; }
+        public PictureBox CuadroImagen{get; set;} //cuadro donde se dibuja
 
-        public abstract void Dibujar(Graphics g, int x, int y, int tamano);
+        public Node Arriba{get; set;}// Nodo conectado de arriba
+        public Node Abajo {get; set;}//Nodo conectado abajo
+
+        public Node Izquierda{get; set;}//Nodo conectado derecha
+        public Node Derecha{get; set;}//Nodo conectado derecha
+
     }
 
 }
