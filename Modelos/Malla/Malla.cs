@@ -69,45 +69,99 @@ namespace JuegoTron // nombre del espacio de trabajo
             }
         }
 
-        private void InitializarMoto()
+        private void InitializarMoto(int Filas,int Columnas)
         {
-            Moto = new ListaEnlazadaMoto(); // Tamaño inicial de la estela
+            Moto = new ListaEnlazadaMoto(); 
 
-            int Cabezafila = sizeFilas / 2;
-            int CabezaColumna = sizeColumnas / 2;
+            int nodoCentral = ObtenerNodoCentral(Filas,Columnas);
+            int nodoActual = nodoCentral.Izquierda.Izquierda;
+            
+            Moto.Add(nodoActual);
+            Moto.Add(nodoActual.Derecha); // Primer segmento de la estela (cola)
+            Moto.Add(nodoActual.Derecha.Derecha); // Segundo segmento de la estela
+            Moto.Add(nodoActual.Derecha.Derecha.Derecha); // Cabeza de la moto
+        }
+        
+        private Node ObtenerNodoCentral(int Filas, int Columnas)
+        {
+            Node nodoActual = NodoInicial;
+            int filaCentral = Filas / 2;
+            int columnaCentral = Columnas / 2;
 
-            // Agregar los segmentos de la estela en orden, comenzando desde la cola
-            Moto.Add(Matriz[Cabezafila, CabezaColumna - 3]);
-            Moto.Add(Matriz[Cabezafila, CabezaColumna - 2]); // Primer segmento de la estela (cola)
-            Moto.Add(Matriz[Cabezafila, CabezaColumna - 1]); // Segundo segmento de la estela
-            Moto.Add(Matriz[Cabezafila, CabezaColumna]);     // Cabeza de la moto
+
+            for (int i = 0; i < filaCentral; i++)
+            {
+                nodoActual = nodoActual.Abajo;
+            }
+
+            for (int i = 0; i < columnaCentral; i++)
+            {
+                nodoActual = nodoActual.Derecha;
+            }
+
+            return nodoActual;
+        }
+
+        private int ObtenerCantidadNodos()
+        {
+            Node nodoActual = NodoInicial;
+            int count = 0;
+            while (nodoActual != null)
+            {
+                Node nodoFila = nodoActual;
+                while (nodoFila != null)
+                {
+                    count++;
+                    nodoFila = nodoFila.Derecha;
+                }
+
+                nodoActual = nodoActual.Abajo;
+            }
+
+            return count;
         }
 
         public void MoverMoto(Direction direccion)
         {
             Node currentNode = Moto.Head.GridNode;
-            Node? nextNode = null;
+            Node? nodoSiguiente = null;
 
             switch (direccion)
             {
                 case Direction.Arriba:
-                    nextNode = currentNode.Arriba;
+                    nodoSiguiente = currentNode.Arriba;
                     break;
                 case Direction.Abajo:
-                    nextNode = currentNode.Abajo;
+                    nodoSiguiente = currentNode.Abajo;
                     break;
                 case Direction.Izquierda:
-                    nextNode = currentNode.Izquierda;
+                    nodoSiguiente = currentNode.Izquierda;
                     break;
                 case Direction.Derecha:
-                    nextNode = currentNode.Derecha;
+                    nodoSiguiente = currentNode.Derecha;
                     break;
             }
 
-            if (nextNode != null)
+            if (nodoSiguiente != null) //&& !EsColision(nodoSiguiente)
             {
-                Moto.Move(nextNode);
+                Moto.Move(nodoSiguiente);
+                //return false;
             }
         }
+        public Node ObtenerNodoEn(int fila,int columna)
+        {
+            Node nodoActual = NodoInicial;
+            for(int i= 0; i< fila && nodoActual != null; i++)
+            {
+                nodoActual = nodoActual.Abajo;
+
+            }
+            for(int j= 0; j< columna && nodoActual != null; j++)
+            {
+                nodoActual = nodoActual.Derecha;  
+            }
+            return nodoActual;
+        }
+
     }
 }
