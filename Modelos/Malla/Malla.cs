@@ -5,34 +5,35 @@ using System.Windows.Forms;//con controladores de formularios
 namespace JuegoTron // nombre del espacio de trabajo
 {
     
-    public class MatrizListaEnlazada //clase de la matriz 
+    public class MallaListaEnlazada //clase de la malla 
     {
-        private int sizeFilas;//tamaño de filas 
-        private int sizeColumnas;//tamaño de columnas
         private int sizeCuadroImagen;//tamaño de cada Picturebox
-
-        public Node[,] Matriz { get;  set; }//matriz de nodos, como guia
-        public ListaEnlazadaMoto Moto { get; private set; }//
-
-        public MatrizListaEnlazada(int sizeFilas, int sizeColumnas, int sizeCuadroImagen)
-        {
-            this.sizeFilas = sizeFilas;
-            this.sizeColumnas = sizeColumnas;
+        public Node NodoInicial { get; private set; }// nodo incial de listas enlazdas 
+        public ListaEnlazadaMoto Moto { get; private set; }//lista enlazada de la moto
+        public MallaListaEnlazada(int Filas, int Columnas, int sizeCuadroImagen)
+        {//clase de la malla
             this.sizeCuadroImagen = sizeCuadroImagen;
-            Matriz = new Node[sizeFilas, sizeColumnas];
-            InitializarMatriz();
-            InitializarMoto();
+          
+            InitializarMalla(Filas,Columnas);
+            InitializarMoto(Filas,Columnas);
             
         }
 
-        private void InitializarMatriz()
+        private void InitializarMalla(int Filas,int Columnas)
         {
-            for (int fila = 0; fila < sizeFilas; fila++)
+            Node nodoArriba = null;
+            Node nodoAnteriorColumna = null;
+            for (int fila = 0; fila < Filas; fila++)
             {
-                for (int columna = 0; columna < sizeColumnas; columna++)
+                Node nodoAnteriorFila = null;
+                for (int columna = 0; columna < Columnas; columna++)
                 {
+                    if (columna == 0)
+                    {
+                        nodoArriba = nodoAnteriorColumna;
+                    }
                     // Crear un nuevo nodo
-                    Node node = new Node
+                    Node nodoActual = new Node
                     {
                         CuadroImagen = new PictureBox
                         {
@@ -43,20 +44,26 @@ namespace JuegoTron // nombre del espacio de trabajo
                             Location = new Point(columna * sizeCuadroImagen, fila * sizeCuadroImagen)
                         }
                     };
-
-                    // Añadir el nodo a la matriz
-                    Matriz[fila, columna] = node;
-
-                    // Conectar con nodos vecinos si existen
-                    if (fila > 0)
+                    // conexion con los nodos
+                    if(nodoAnteriorFila != null)
                     {
-                        node.Arriba = Matriz[fila - 1, columna];
-                        Matriz[fila - 1, columna].Abajo = node;
+                        nodoAnteriorFila.Derecha = nodoActual;
+                        nodoActual.Izquierda = nodoAnteriorFila;
                     }
-                    if (columna > 0)
+                    if (nodoArriba != null)
                     {
-                        node.Izquierda = Matriz[fila, columna - 1];
-                        Matriz[fila, columna - 1].Derecha = node;
+                        nodoArriba.Abajo = nodoActual;
+                        nodoActual.Arriba = nodoArriba;
+                        nodoArriba = nodoArriba.Derecha;
+                    }
+                    nodoAnteriorFila = nodoActual;
+                    if (fila ==0 && columna ==0)
+                    {
+                        NodoInicial = nodoActual;
+                    }
+                    if (columna == 0)
+                    {
+                        nodoAnteriorColumna = nodoActual;
                     }
                 }
             }
