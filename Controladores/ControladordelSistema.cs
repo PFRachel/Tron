@@ -71,8 +71,8 @@ namespace JuegoTron
                         currentDirection = Direction.Derecha;
                     break;
                 case Keys.Up:
-                    if (currentDirection != Direction.Arriba)
-                        currentDirection = Direction.Abajo;
+                    if (currentDirection != Direction.Abajo)
+                        currentDirection = Direction.Arriba;
                     break;
                 case Keys.Down:
                     if (currentDirection != Direction.Arriba)
