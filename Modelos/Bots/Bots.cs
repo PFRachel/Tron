@@ -17,16 +17,23 @@ namespace JuegoTron
         public void MoverBot()
         {
 
-            Node siguienteNodo;
-            do
+            Node siguienteNodo = null;
+            bool movimientoValido = false;
+            int intentos = 0;
+
+            
+            while (!movimientoValido /*&& intentos < 4*/)
             {
                 CambiarDireccionAleatoria();
                 siguienteNodo = GetsiguienteNodo();
-            } while (!verificarNodo(siguienteNodo));
-            
-            
+
+                if (siguienteNodo != null && verificarNodo(siguienteNodo) && !EsBorde(siguienteNodo))
+                {
+                    movimientoValido = true;
+                }
+            }
             //Mover bot 
-            if (siguienteNodo != null)
+            if (movimientoValido && siguienteNodo != null)
             {
                 
                 Move(siguienteNodo);
@@ -66,6 +73,16 @@ namespace JuegoTron
                 
             }
 
+        }
+        private bool EsBorde(Node nodo)
+        {
+            // Verificar si el nodo es un borde en cualquier direcci�n
+            if (nodo.Arriba == null || nodo.Abajo == null || nodo.Izquierda == null || nodo.Derecha == null)
+            {
+                return true; // Es un borde
+            }
+
+            return false; // No es un borde
         }
     }
 
