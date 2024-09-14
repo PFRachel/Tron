@@ -11,6 +11,13 @@ namespace JuegoTron
         public MotoNodo? Next { get; set; } // El siguiente nodo en la estela
         public Node? Position {get; set; }// El nodo donde esta esa parte de la moto
     }
+     public enum Direction
+    {
+        Arriba,
+        Abajo,
+        Izquierda,
+        Derecha
+    }
     public class ListaEnlazadaMoto
     {
         public MotoNodo Head { get; private set; }

@@ -7,25 +7,18 @@ using JuegoTron.Modelos.Items;
 using TRONversion1.Modelos.Moto.Poderes;
 using Timer = System.Windows.Forms.Timer;
 
+
+
 //dibujar la maya 
 namespace JuegoTron
 {
-        public enum Direction
-    {
-        Arriba,
-        Abajo, 
-        Izquierda, 
-        Derecha
-    }
+
     public partial class Form1 : Form
     {
         private const int Cabezafila = 22;
-        private const int CabezaColumna = 22; // Tama�o del grid NxN
-                                             // Tama�o del grid NxN
-        private const int sizeCuadroImagen = 25; // Tama�o de cada PictureBox
+        private const int CabezaColumna = 22;
+        private const int sizeCuadroImagen = 25;
         private MallaListaEnlazada MallaListaEnlazada;
-
-        private Direction currentDirection;
         private ColaItems colaItems = new ColaItems(); // Cola de ítems para la moto
         private bool escudoActivo = false; 
         private Timer escudoTimer;
@@ -41,8 +34,6 @@ namespace JuegoTron
         private Label lblPoderes;
         private List<Tuple<Poder, PictureBox>> listaDePoderes = new List<Tuple<Poder, PictureBox>>();
         private Timer itemTimer;
-        
-        
 
         public Form1()
         {
@@ -51,9 +42,9 @@ namespace JuegoTron
                 InitializeComponent();
                 InitializarMallaListaEnlazada();
                 bots = new List<Bot>();
-                InicializarBots(4);
+                InicializarBots(4); // 4 bots
                 GenerarPoderesAleatorios(4);
-                GenerarItemsAlatorios(5);
+                GenerarItemsAleatorios(5);
 
                 // Temporizadores para mover la moto y los bots
                 moveTimer = new System.Windows.Forms.Timer();
@@ -104,38 +95,41 @@ namespace JuegoTron
 
                 this.Paint += Form1_Paint;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error al inicializar el formulario: {ex.Message}", "Error de Inicialización", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void BotMoveTimer_Tick(object sender,EventArgs e)
+
+        private void BotMoveTimer_Tick(object sender, EventArgs e)
         {
             try
             {
                 MoverBots();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                 MessageBox.Show($"Error al mover los bots: {ex.Message}", "Error en Movimiento de Bots", MessageBoxButtons.OK, MessageBoxIcon.Error);   
+                MessageBox.Show($"Error al mover los bots: {ex.Message}", "Error en Movimiento de Bots", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            MoverBots();
         }
+
         private void MoverBots()
         {
-            for(int i = bots.Count -1; i>0; i--)
+            // Recorre la lista de bots en orden inverso para evitar modificar la colección mientras se enumera
+            for (int i = bots.Count - 1; i >= 0; i--)
             {
                 Bot bot = bots[i];
                 try
                 {
                     VerificarColisiones(bot);
                     VerificarColisionConItems(bot);
-                    if(bot.Vivo)
+                    if (bot.Vivo)
                     {
-                        bot.MoverBot();
+                        bot.MoverBot(); // Mueve el bot solo si no hay colisión
                     }
                     else
                     {
+                        // Elimina el bot de la lista si no está vivo
                         bots.RemoveAt(i);
                     }
                 }
@@ -144,14 +138,20 @@ namespace JuegoTron
                     MessageBox.Show($"Error al mover un bot: {ex.Message}", "Error en Bot", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     bot.Vivo = false; // Marcar el bot como muerto en caso de error
                     bots.RemoveAt(i); // Elimina el bot de la lista
-                    
                 }
             }
+
             Invalidate(); // Redibujar la pantalla
         }
-        private bool VerificarColisiones(ListaEnlazadaMoto moto)
+
+
+
+
+
+
+        private void VerificarColisiones(ListaEnlazadaMoto moto)
         {
-          try
+            try
             {
                 if (!moto.Vivo || escudoActivo) return; 
 
@@ -194,6 +194,7 @@ namespace JuegoTron
                 moto.Vivo = false; 
             }
         }
+
         private void DesaperecerMoto(ListaEnlazadaMoto moto)
         {
             MotoNodo actualNodo = moto.Head;
@@ -225,57 +226,57 @@ namespace JuegoTron
         }
 
 
+
         private void InicializarBots(int cantidad)
         {
-            for( int i = 0; i < cantidad; i++)
+            for (int i = 0; i < cantidad; i++)
             {
                 Bot nuevoBot = new Bot();
+                nuevoBot.colorMoto = Color.Yellow;
+                nuevoBot.colorEstelaMoto = Color.LightYellow;
                 Node posicionInicial = ObtenerPosicionInicialBot(i);
                 nuevoBot.Add(posicionInicial);
                 bots.Add(nuevoBot);
-
             }
         }
+
         private Node ObtenerPosicionInicialBot(int botIndex)
         {
-            switch(botIndex)
+            switch (botIndex)
             {
-                case 0: return MallaListaEnlazada.ObtenerNodoEn(0,0);//derecha
-                case 1: return MallaListaEnlazada.ObtenerNodoEn(0,Cabezafila -1);//izquierda
-                case 2: return MallaListaEnlazada.ObtenerNodoEn(CabezaColumna-1,0);//derecha abajo
-                case 3: return MallaListaEnlazada.ObtenerNodoEn(CabezaColumna-1,Cabezafila-1);
-                default: return MallaListaEnlazada.ObtenerNodoEn(0,0);
-
+                case 0: return MallaListaEnlazada.ObtenerNodoEn(2, 2); // Esquina superior izquierda
+                case 1: return MallaListaEnlazada.ObtenerNodoEn(2, Cabezafila - 3); // Esquina superior derecha
+                case 2: return MallaListaEnlazada.ObtenerNodoEn(CabezaColumna - 3, 2); // Esquina inferior izquierda
+                case 3: return MallaListaEnlazada.ObtenerNodoEn(CabezaColumna - 3, Cabezafila - 3); // Esquina inferior derecha
+                default: return MallaListaEnlazada.ObtenerNodoEn(0, 0);
             }
         }
+
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            // Dibuja la malla cuando se pinta la ventana
             DibujarMalla(e.Graphics);
         }
+
         private void DibujarMalla(Graphics g)
         {
             Node nodoActual = MallaListaEnlazada.NodoInicial;
-            while(nodoActual != null)
+            while (nodoActual != null)
             {
                 Node nodoFila = nodoActual;
                 while (nodoFila != null)
                 {
-                    g.DrawRectangle(Pens.Gray,nodoFila.CuadroImagen.Bounds);
+                    g.DrawRectangle(Pens.Gray, nodoFila.CuadroImagen.Bounds);
                     nodoFila = nodoFila.Derecha;
-
                 }
                 nodoActual = nodoActual.Abajo;
             }
         }
-
 
         private void MoveTimer_Tick(object sender, EventArgs e)
         {
             MoveMoto();
         }
 
-        // Mover la moto en la direcci�n actual
         private void MoveMoto()
         {
             if (MallaListaEnlazada.Moto.Combustible > 0)
@@ -312,6 +313,7 @@ namespace JuegoTron
                 }
             }
         }
+
         private void RecargarCombustible(int cantidad, ListaEnlazadaMoto moto)
         {
             MallaListaEnlazada.Moto.Combustible += cantidad;
@@ -323,6 +325,7 @@ namespace JuegoTron
 
             lblCombustible.Text = $"Combustible: {MallaListaEnlazada.Moto.Combustible}";
         }
+
         private void DestruirMoto(ListaEnlazadaMoto moto)
         {
             if (moto is Bot bot)
@@ -339,6 +342,8 @@ namespace JuegoTron
                 MessageBox.Show("La moto ha sido destruida.");
             }
         }
+
+
         private void VerificarColisionConItems(ListaEnlazadaMoto moto)
         {
             Node posicionMoto = moto.Head.GridNode;
@@ -354,6 +359,7 @@ namespace JuegoTron
                 }
             }
         }
+
         private void AplicarPoderItem(Item item, ListaEnlazadaMoto moto)
         {
             switch (item.Tipo)
@@ -378,8 +384,6 @@ namespace JuegoTron
         {
             MallaListaEnlazada.Moto.AumentarEstela(cantidad); 
         }
-
-
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             switch (keyData)
@@ -408,14 +412,14 @@ namespace JuegoTron
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+
         
 
-        // Cambiar la direcci�n a la izquierda
-
-          private void InitializarMallaListaEnlazada()
+        
+        private void InitializarMallaListaEnlazada()
         {
 
-    
+
             MallaListaEnlazada = new MallaListaEnlazada(Cabezafila, CabezaColumna, sizeCuadroImagen);
             Node nodoActual = MallaListaEnlazada.NodoInicial;
             while (nodoActual != null)
@@ -427,9 +431,12 @@ namespace JuegoTron
                     nodoFila = nodoFila.Derecha;
                 }
                 nodoActual = nodoActual.Abajo;
-           
+
             }
+
         }
+        
+
         private void ActivarEscudo()
         {
             if (!escudoActivo)
@@ -442,6 +449,8 @@ namespace JuegoTron
                 escudoTimer.Start();
             }
         }
+
+
         private void DesactivarEscudo()
         {
             escudoActivo = false;
@@ -449,6 +458,7 @@ namespace JuegoTron
             lblPoderActivo.Text = "";
 
         }
+
         private void ActivarHiperVelocidad(int duracion)
         {
 
@@ -460,6 +470,7 @@ namespace JuegoTron
             hiperVelocidadTimer.Start();
 
         }
+
         private void DesactivarHiperVelocidad()
         {
             lblPoderActivo.Text = "";
@@ -472,6 +483,7 @@ namespace JuegoTron
             pilaPoderes.ApilarPoder(poder);
             ActualizarEtiquetaPoderes();
         }
+
         private void AplicarPoder()
         {
             Poder poder = pilaPoderes.DesapilarPoder();
@@ -490,6 +502,7 @@ namespace JuegoTron
             }
             
         }
+
         private void ActualizarEtiquetaPoderes()
         {
             List<Poder> poderes = pilaPoderes.ObtenerPoderes();
@@ -626,6 +639,5 @@ namespace JuegoTron
                 }
             }
         }
-
-    }    
+    }
 }
