@@ -1,4 +1,7 @@
-Juego Tron
-
-Utilizando estructuras de datos en C#
-JOLI
+----------------------------------------------
+JUEGO TRON
+----------------------------------------------
+Utilizando estructuras de datos lineales en C#
+----------------------------------------------
+Datos lineales; Listas, pilas y colas.
+-----------------------------------------------

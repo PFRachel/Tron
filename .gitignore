@@ -1,11 +1,2 @@
-<<<<<<< HEAD
-# Archivos de compilación
-bin/
-obj/
-*.dll
-*.exe
-*.pdb
-=======
 /bin/
 /obj/
->>>>>>> dev
